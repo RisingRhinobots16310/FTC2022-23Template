@@ -67,6 +67,7 @@ public class HardwarePushbot_TC
     public CRServo CarouselServo=null;
     public Servo ClawReachServo=null;
     public Servo   ClawServo=null;
+    public DcMotor   ClawMotor=null;
     public Servo   CapPickServo=null;
     public Servo   CapGrabClawServo=null;
 
@@ -108,6 +109,7 @@ public class HardwarePushbot_TC
         frontRight = hwMap.get(DcMotorEx.class, "FrontRight");
         backLeft =  hwMap.get(DcMotorEx.class, "BackLeft");
         backRight = hwMap.get(DcMotorEx.class, "BackRight");
+        ClawMotor = hwMap.get(DcMotorEx.class, "ClawMotor");
 
 
         //    CapPickServo = hwMap.get(Servo.class, "CapPick");
@@ -118,6 +120,8 @@ public class HardwarePushbot_TC
         frontRight.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        ClawMotor.setDirection(DcMotorEx.Direction.FORWARD);
+
 
 
 
@@ -126,12 +130,14 @@ public class HardwarePushbot_TC
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        ClawMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
 
         // Set all motors to zero power
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
+        ClawMotor.setPower(0);
         backRight.setPower(0);
         ArmMotor.setPower(0);
         ArmReach.setPower(0);
@@ -143,6 +149,7 @@ public class HardwarePushbot_TC
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        ClawMotor.setMode((DcMotor.RunMode.RUN_USING_ENCODER));
         ArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ArmReach.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

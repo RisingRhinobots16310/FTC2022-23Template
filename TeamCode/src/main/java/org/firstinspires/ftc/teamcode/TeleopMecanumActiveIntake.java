@@ -83,6 +83,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+    //private DcMotor ClawMotorDrive = null;
 
 
     @Override
@@ -97,6 +98,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
         BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
         BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
+        //ClawMotorDrive = hardwareMap.get(DcMotor.class, "ClawMotor");
         // CarouselDrive = hardwareMap.get(Servo.class, "CarouselDrive");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -105,6 +107,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        //ClawMotorDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
 
@@ -121,6 +124,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             double FrontRightPower;
             double BackLeftPower;
             double BackRightPower;
+            double ClawMotorPower = 0;
 
 
             //double drive = 0.9*(gamepad1.left_stick_y);
@@ -138,7 +142,12 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             FrontRightPower   = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
             BackRightPower   = Range.clip(drive + turn - strafe, -1, 1) /denominator;
 
-
+            if(gamepad1.x){
+                ClawMotorPower = 0.75;
+            }
+            if(gamepad1.y){
+                ClawMotorPower = 0.0;
+            }
 
 
 
@@ -152,6 +161,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             FrontRightDrive.setPower(FrontRightPower);
             BackLeftDrive.setPower(BackLeftPower);
             BackRightDrive.setPower(BackRightPower);
+            //ClawMotorDrive.setPower(ClawMotorPower);
 
 
 

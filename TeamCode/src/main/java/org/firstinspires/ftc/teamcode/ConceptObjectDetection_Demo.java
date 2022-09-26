@@ -59,6 +59,7 @@ import java.util.List;
 public class ConceptObjectDetection_Demo extends LinearOpMode {
 
     private ElapsedTime     runtime = new ElapsedTime();
+    private static Positions positionFinal;
     HardwarePushbot_TC robot   = new HardwarePushbot_TC();
     /*
      * Specify the source for the Tensor Flow Model.
@@ -76,7 +77,11 @@ public class ConceptObjectDetection_Demo extends LinearOpMode {
       "2 Bulb",
       "3 Panel"
     };
-
+    enum Positions {
+            LEFT,
+            MIDDLE,
+            RIGHT;
+    }
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -149,7 +154,17 @@ public class ConceptObjectDetection_Demo extends LinearOpMode {
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
                             double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
                             double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
-
+                            for(int i = 0; i < LABELS.length; i++){
+                                if(i == 0){
+                                    positionFinal = Positions.LEFT;
+                                }
+                                else if(i == 1){
+                                    positionFinal = Positions.MIDDLE;
+                                }
+                                else{
+                                    positionFinal = Positions.RIGHT;
+                                }
+                            }
                             telemetry.addData(""," ");
                             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                             telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
