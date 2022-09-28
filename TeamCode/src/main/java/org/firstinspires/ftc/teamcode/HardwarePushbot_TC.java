@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.transition.Slide;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -60,16 +62,9 @@ public class HardwarePushbot_TC
     public DcMotor  frontRight  = null;
     public DcMotor  backLeft  = null;
     public DcMotor  backRight  = null;
+    public CRServo ClawServo = null;
 
-
-    public DcMotor ArmMotor = null;
-    public DcMotor ArmReach = null;
-    public CRServo CarouselServo=null;
-    public Servo ClawReachServo=null;
-    public Servo   ClawServo=null;
-    public DcMotor   ClawMotor=null;
-    public Servo   CapPickServo=null;
-    public Servo   CapGrabClawServo=null;
+    public DcMotor SlideMotor = null;
 
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6;  // 1440;    // eg: TETRIX Motor Encoder
@@ -109,18 +104,18 @@ public class HardwarePushbot_TC
         frontRight = hwMap.get(DcMotorEx.class, "FrontRight");
         backLeft =  hwMap.get(DcMotorEx.class, "BackLeft");
         backRight = hwMap.get(DcMotorEx.class, "BackRight");
-        ClawMotor = hwMap.get(DcMotorEx.class, "ClawMotor");
+
 
 
         //    CapPickServo = hwMap.get(Servo.class, "CapPick");
         // CapGrabClawServo= hwMap.get(Servo.class, "CapGrabClaw");
-
+        ClawServo = hwMap.get(CRServo.class, "ClawServo");
 
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontRight.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
-        ClawMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        SlideMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
 
 
@@ -130,17 +125,16 @@ public class HardwarePushbot_TC
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        ClawMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        SlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
 
 
         // Set all motors to zero power
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
-        ClawMotor.setPower(0);
         backRight.setPower(0);
-        ArmMotor.setPower(0);
-        ArmReach.setPower(0);
+        SlideMotor.setPower(0);
 
 
         // Set all motors to run without encoders.
@@ -149,9 +143,9 @@ public class HardwarePushbot_TC
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        ClawMotor.setMode((DcMotor.RunMode.RUN_USING_ENCODER));
-        ArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        ArmReach.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        SlideMotor.setMode((DcMotor.RunMode.RUN_USING_ENCODER));
+
+
 
 
 

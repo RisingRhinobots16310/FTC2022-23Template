@@ -49,6 +49,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.HardwarePushbot_TC.COUNTS_PER_INCH;
+
+import android.transition.Slide;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -83,7 +87,10 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
-    //private DcMotor ClawMotorDrive = null;
+    private DcMotor SlideMotorDrive = null;
+    private Servo ClawServoDrive = null;
+    public double openPosition = 0.87;
+    public double closedPosition = 1;
 
 
     @Override
@@ -98,16 +105,16 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
         BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
         BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
-        //ClawMotorDrive = hardwareMap.get(DcMotor.class, "ClawMotor");
-        // CarouselDrive = hardwareMap.get(Servo.class, "CarouselDrive");
-
+        SlideMotorDrive = hardwareMap.get(DcMotor.class, "SlideMotor");
+        ClawServoDrive= hardwareMap.get(Servo.class, "ClawServo");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        //ClawMotorDrive.setDirection(DcMotor.Direction.FORWARD);
+        SlideMotorDrive.setDirection(DcMotor.Direction.REVERSE);
+
 
 
 
@@ -124,7 +131,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             double FrontRightPower;
             double BackLeftPower;
             double BackRightPower;
-            double ClawMotorPower = 0;
+            double SlideMotorPower = 0;
 
 
             //double drive = 0.9*(gamepad1.left_stick_y);
@@ -143,10 +150,20 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             BackRightPower   = Range.clip(drive + turn - strafe, -1, 1) /denominator;
 
             if(gamepad1.x){
-                ClawMotorPower = 0.75;
+                SlideMotorPower = 0.2;
             }
             if(gamepad1.y){
-                ClawMotorPower = 0.0;
+                SlideMotorPower = 0.0;
+            }
+            if(gamepad1.b){
+                SlideMotorPower = -0.2;
+
+            }
+            if(gamepad1. dpad_right){
+                ClawServoDrive.setPosition(closedPosition);
+            }
+            if(gamepad1.dpad_left){
+                ClawServoDrive.setPosition(openPosition);
             }
 
 
@@ -161,7 +178,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             FrontRightDrive.setPower(FrontRightPower);
             BackLeftDrive.setPower(BackLeftPower);
             BackRightDrive.setPower(BackRightPower);
-            //ClawMotorDrive.setPower(ClawMotorPower);
+            SlideMotorDrive.setPower(SlideMotorPower);
 
 
 
@@ -172,6 +189,40 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "Frontleft (%.2f), Frontright (%.2f), Backleft (%.2f), Backright (%.2f)", FrontLeftPower, FrontRightPower, BackLeftPower,BackRightPower);
             telemetry.update();
+        }
+    }
+    public void encoderDriveArmInLine(DcMotor ArmMotor, double speed, double armmovement, double timeoutS) {
+        int newArmTarget;
+
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newArmTarget = ArmMotor.getCurrentPosition() + (int) (armmovement * COUNTS_PER_INCH);
+            ArmMotor.setPower(Math.abs(speed));
+            ArmMotor.setTargetPosition(newArmTarget);
+
+            // Turn On RUN_TO_POSITION
+            ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) && ArmMotor.isBusy()) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d ", newArmTarget);
+                telemetry.addData("Path2", "Running at %7d ", ArmMotor.getCurrentPosition());
+
+                telemetry.update();
+            }
+
+            sleep(250);   // optional pause after each move
+
         }
     }
 }
