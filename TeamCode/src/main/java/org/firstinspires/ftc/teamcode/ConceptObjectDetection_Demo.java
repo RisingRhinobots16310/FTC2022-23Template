@@ -155,15 +155,18 @@ public class ConceptObjectDetection_Demo extends LinearOpMode {
                             double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
                             double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
                             for(int i = 0; i < LABELS.length; i++){
-                                if(i == 0){
-                                    positionFinal = Positions.LEFT;
+                                if(recognition.getLabel().equals(LABELS[i])){
+                                    if(i == 0){
+                                        positionFinal = Positions.LEFT;
+                                    }
+                                    else if(i == 1){
+                                        positionFinal = Positions.MIDDLE;
+                                    }
+                                    else{
+                                        positionFinal = Positions.RIGHT;
+                                    }
                                 }
-                                else if(i == 1){
-                                    positionFinal = Positions.MIDDLE;
-                                }
-                                else{
-                                    positionFinal = Positions.RIGHT;
-                                }
+
                             }
                             telemetry.addData(""," ");
                             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
