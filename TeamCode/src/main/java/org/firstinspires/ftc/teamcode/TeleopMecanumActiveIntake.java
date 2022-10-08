@@ -155,6 +155,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             if(gamepad1.y){
                 SlideMotorPower = 0.0;
             }
+            //Assigns Gamepad Button B to decrease slide power
             if(gamepad1.b){
                 SlideMotorPower = -0.2;
 
