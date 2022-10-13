@@ -55,9 +55,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
 
 
 /**
@@ -78,20 +78,21 @@ import com.qualcomm.robotcore.util.Range;
 public class NewTeleopMecanumActiveIntake extends LinearOpMode {
 
     // Declare OpMode members.
+    NewHardwarePushbot_TC robot;
     HardwareMap hwMap;
-    NewHardwarePushbot_TC robot = new NewHardwarePushbot_TC(hwMap);
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
-    private Servo ClawServo;
+    private DcMotor SlideMotor;
+    private double FrontLeftPower;
+    private double FrontRightPower;
+    private double BackLeftPower;
+    private double BackRightPower;
+    private double SlidePower;
+    private final double sens = 0.2;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-/*
-        // Initialize the hardware variables. Note that the strings used here as parameters
+        /*      // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         FrontLeftDrive  = hardwareMap.get(DcMotor.class, "FrontLeft");
@@ -105,51 +106,35 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);*/
 
-
-*/
-        frontLeft = frontLeft;
-        frontRight = frontRight;
-        backLeft = backLeft;
-        backRight = backRight;
+        robot = new NewHardwarePushbot_TC(hwMap);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             // Setup a variable for each drive wheel to save power level for telemetry
-            double FrontLeftPower;
-            double FrontRightPower;
-            double BackLeftPower;
-            double BackRightPower;
-
-
-            //double drive = 0.9*(gamepad1.left_stick_y);
-            // double turn  =  0.7 * (-gamepad1.right_stick_x);
-            // double strafe = 0.9*(-gamepad1.left_stick_x);
-            double drive = 0.9 *  (-gamepad1.left_stick_y);
-            double turn  = 0.7* (gamepad1.left_stick_x);
-            double strafe = 0.9* (gamepad1.right_stick_x);
-
-
+            double drive = 0.9 *  (-gamepad1.left_stick_y * sens);
+            double turn  = 0.7* (gamepad1.left_stick_x * sens);
+            double strafe = 0.9* (gamepad1.right_stick_x * sens);
+            double slidedrive = 0.9 *  (-gamepad2.left_stick_y);
             double denominator = Math.max(Math.abs(drive)+Math.abs(turn)+Math.abs(strafe),1);
 
-            FrontLeftPower    = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
-            BackLeftPower    = Range.clip(drive - turn + strafe, -1, 1)/denominator ;
-            FrontRightPower   = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
-            BackRightPower   = Range.clip(drive + turn - strafe, -1, 1) /denominator;
 
+            if(gamepad1.dpad_right){
+                ClawServo.setPosition(closedPosition);
+            }
+            if(gamepad1.dpad_left){
+                ClawServo.setPosition(openPosition);
+            }
 
-
-
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
+            FrontLeftPower = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
+            BackLeftPower = Range.clip(drive - turn + strafe, -1, 1)/denominator ;
+            FrontRightPower = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
+            BackRightPower = Range.clip(drive + turn - strafe, -1, 1) /denominator;
+            SlidePower = Range.clip(slidedrive , -1, 1) /denominator;
 
             // Send calculated power to wheels
             frontLeft.setPower(FrontLeftPower);
@@ -157,87 +142,12 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
             backLeft.setPower(BackLeftPower);
             backRight.setPower(BackRightPower);
 
-
-
-
-
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "Frontleft (%.2f), Frontright (%.2f), Backleft (%.2f), Backright (%.2f)", FrontLeftPower, FrontRightPower, BackLeftPower,BackRightPower);
             telemetry.update();
         }
     }
-    public void encoderDriveInLine(double speed,
-                                   double frontleftInches, double frontrightInches,
-                                   double backleftInches, double backrightInches,
-                                   double timeoutS) {
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newfrontLeftTarget = frontLeft.getCurrentPosition() + (int)(frontleftInches * COUNTS_PER_INCH);
-            newfrontRightTarget = frontRight.getCurrentPosition() + (int)(frontrightInches * COUNTS_PER_INCH);
-            newbackLeftTarget = backLeft.getCurrentPosition() + (int)(backleftInches * COUNTS_PER_INCH);
-            newbackRightTarget = backRight.getCurrentPosition() + (int)(backrightInches * COUNTS_PER_INCH);
-
-            frontLeft.setTargetPosition(newfrontLeftTarget);
-            frontRight.setTargetPosition(newfrontRightTarget);
-            backLeft.setTargetPosition(newbackLeftTarget);
-            backRight.setTargetPosition(newbackRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            frontLeft.setPower(Math.abs(speed));
-            frontRight.setPower(Math.abs(speed));
-            backLeft.setPower(Math.abs(speed));
-            backRight.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (frontLeft.isBusy() && frontRight.isBusy() &&
-                            backRight.isBusy() && backLeft.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newfrontLeftTarget,  newfrontRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        frontLeft.getCurrentPosition(),
-                        frontRight.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            sleep(250);   // optional pause after each move
-        }
-    }
-
     public void encoderDriveArmInLine(DcMotor ArmMotor, double speed, double armmovement, double timeoutS) {
         int newArmTarget;
 

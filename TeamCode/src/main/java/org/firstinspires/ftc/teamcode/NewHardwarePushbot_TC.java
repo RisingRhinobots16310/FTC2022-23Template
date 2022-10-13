@@ -57,17 +57,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class NewHardwarePushbot_TC
 {
     /* Public OpMode members. */
-    public DcMotor  frontLeft   = null;
-    public DcMotor  frontRight  = null;
-    public DcMotor  backLeft  = null;
-    public DcMotor  backRight  = null;
-
-
-    public DcMotor ArmMotor = null;
-    public DcMotor ArmReach = null;
-    public CRServo CarouselServo=null;
-    public Servo ClawReachServo=null;
-    public Servo   ClawServo=null;
+    public HardwareMap hardwareMap;
+    static public DcMotor frontLeft = null;
+    static public DcMotor  frontRight  = null;
+    static public DcMotor  backLeft  = null;
+    static public DcMotor  backRight  = null;
+    static public DcMotor SlideMotor = null;
+    static public Servo   ClawServo=null;
 
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6;  // 1440;    // eg: TETRIX Motor Encoder
@@ -75,25 +71,29 @@ public class NewHardwarePushbot_TC
     static final double     WHEEL_DIAMETER_INCHES   = 4 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-
+    static final double openPosition = 0.66;
+    static final double closedPosition = 0.3;
     /* local OpMode members. */
-    public HardwareMap hwMap;
     private ElapsedTime runtime = new ElapsedTime();
     private Telemetry telemetry;
 
     /* Initialize standard Hardware interfaces */
-    public NewHardwarePushbot_TC(HardwareMap awMap) {
-        hwMap = awMap;
+    public NewHardwarePushbot_TC(HardwareMap hardwareMap){
+        init(hardwareMap);
+    }
+
+
+    private void init(HardwareMap hardwareMap) {
         // Define and Initialize Motors
-        frontLeft  = hwMap.get(DcMotorEx.class, "FrontLeft");
-        frontRight = hwMap.get(DcMotorEx.class, "FrontRight");
-        backLeft =  hwMap.get(DcMotorEx.class, "BackLeft");
-        backRight = hwMap.get(DcMotorEx.class, "BackRight");
-        ArmMotor = hwMap.get(DcMotorEx.class, "ArmMotor");
-        ArmReach = hwMap.get(DcMotorEx.class, "ArmReach");
-        ClawServo = hwMap.get(Servo.class, "Claw");
-        ClawReachServo = hwMap.get(Servo.class, "ClawReach");
-        CarouselServo = hwMap.get(CRServo.class, "Carousel");
+        frontLeft  = hardwareMap.get(DcMotorEx.class, "FrontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
+        backLeft =  hardwareMap.get(DcMotorEx.class, "BackLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "BackRight");
+        SlideMotor = hardwareMap.get(DcMotor.class, "SlideMotor");
+
+
+        // Define and Initialize Servos
+        ClawServo = hardwareMap.get(Servo.class, "ClawServo");
 
 
 
@@ -101,38 +101,28 @@ public class NewHardwarePushbot_TC
         frontRight.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
-        ArmMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        ArmReach.setDirection(DcMotorEx.Direction.REVERSE);
-
+        SlideMotor.setDirection(DcMotor.Direction.REVERSE);
 
 
         frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        ArmMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        ArmReach.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
 
         // Set all motors to zero power
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-        ArmMotor.setPower(0);
-        ArmReach.setPower(0);
+        SlideMotor.setPower(0);
 
 
-        // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        ArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        ArmReach.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
 
     }
 
