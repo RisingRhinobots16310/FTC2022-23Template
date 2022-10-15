@@ -88,21 +88,6 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        /*      // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        FrontLeftDrive  = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
-        BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
-        BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
-        // CarouselDrive = hardwareMap.get(Servo.class, "CarouselDrive");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);*/
         robot = new NewHardwarePushbot_TC(hardwareMap);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
