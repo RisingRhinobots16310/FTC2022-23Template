@@ -185,5 +185,33 @@ public class NewHardwarePushbot_TC
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sleep(250);   // optional pause after each move
     }
+    public void encoderDriveArm(DcMotor ArmMotor, double speed, double armmovement, double timeoutS) throws InterruptedException{
+            int newArmTarget;
+
+            // Determine new target position, and pass to motor controller
+            newArmTarget = ArmMotor.getCurrentPosition() + (int) (armmovement * COUNTS_PER_INCH);
+            ArmMotor.setPower(Math.abs(speed));
+            ArmMotor.setTargetPosition(newArmTarget);
+
+            // Turn On RUN_TO_POSITION
+            ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while ( (runtime.seconds() < timeoutS) && ArmMotor.isBusy()) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d ", newArmTarget);
+                telemetry.addData("Path2", "Running at %7d ", ArmMotor.getCurrentPosition());
+
+                telemetry.update();
+            }
+
+            sleep(250);   // optional pause after each move
+
+    }
 }
 
