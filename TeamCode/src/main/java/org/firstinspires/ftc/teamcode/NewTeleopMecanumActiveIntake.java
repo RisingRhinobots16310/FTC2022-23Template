@@ -53,8 +53,6 @@ import static org.firstinspires.ftc.teamcode.NewHardwarePushbot_TC.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -79,9 +77,7 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
 
     // Declare OpMode members.
     NewHardwarePushbot_TC robot;
-    HardwareMap hwMap;
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor SlideMotor;
     private double FrontLeftPower;
     private double FrontRightPower;
     private double BackLeftPower;
@@ -107,8 +103,7 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
         FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackRightDrive.setDirection(DcMotor.Direction.REVERSE);*/
-
-        robot = new NewHardwarePushbot_TC(hwMap);
+        robot = new NewHardwarePushbot_TC(hardwareMap);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -124,10 +119,10 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
 
 
             if(gamepad1.dpad_right){
-                ClawServo.setPosition(closedPosition);
+                ClawServo.setPosition(rightClawClosedPosition);
             }
             if(gamepad1.dpad_left){
-                ClawServo.setPosition(openPosition);
+                ClawServo.setPosition(leftClawOpenPosition);
             }
 
             FrontLeftPower = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
@@ -141,10 +136,12 @@ public class NewTeleopMecanumActiveIntake extends LinearOpMode {
             frontRight.setPower(FrontRightPower);
             backLeft.setPower(BackLeftPower);
             backRight.setPower(BackRightPower);
+            SlideMotor.setPower(SlidePower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "Frontleft (%.2f), Frontright (%.2f), Backleft (%.2f), Backright (%.2f)", FrontLeftPower, FrontRightPower, BackLeftPower,BackRightPower);
+            telemetry.addData("Slide Motor Position", "Position: " + SlideMotor.getCurrentPosition());
             telemetry.update();
         }
     }

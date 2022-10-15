@@ -30,7 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
-import com.qualcomm.robotcore.hardware.CRServo;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -57,7 +57,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class NewHardwarePushbot_TC
 {
     /* Public OpMode members. */
-    public HardwareMap hardwareMap;
+    static public HardwareMap hardwareMap = null;
     static public DcMotor frontLeft = null;
     static public DcMotor  frontRight  = null;
     static public DcMotor  backLeft  = null;
@@ -71,8 +71,8 @@ public class NewHardwarePushbot_TC
     static final double     WHEEL_DIAMETER_INCHES   = 4 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double openPosition = 0.66;
-    static final double closedPosition = 0.3;
+    static final double leftClawOpenPosition = 0.66;
+    static final double rightClawClosedPosition = 0.3;
     /* local OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
     private Telemetry telemetry;
