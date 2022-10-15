@@ -78,13 +78,14 @@ public class NewHardwarePushbot_TC
     private Telemetry telemetry;
 
     /* Initialize standard Hardware interfaces */
-    public NewHardwarePushbot_TC(HardwareMap hardwareMap){
-        init(hardwareMap);
+    public NewHardwarePushbot_TC(HardwareMap hwMap){
+        init(hwMap);
     }
 
 
-    private void init(HardwareMap hardwareMap) {
+    private void init(HardwareMap hwMap) {
         // Define and Initialize Motors
+        hardwareMap = hwMap;
         frontLeft  = hardwareMap.get(DcMotorEx.class, "FrontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
         backLeft =  hardwareMap.get(DcMotorEx.class, "BackLeft");
