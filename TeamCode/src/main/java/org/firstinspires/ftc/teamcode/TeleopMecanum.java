@@ -49,7 +49,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.HardwarePushbot_TC.*;
+import static org.firstinspires.ftc.teamcode.Hardware.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -73,10 +73,10 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="NewTeleopMecanumActiveIntake", group="Concept")
 //@Disabled
-public class TeleopMecanumActiveIntake extends LinearOpMode {
+public class TeleopMecanum extends LinearOpMode {
 
     // Declare OpMode members.
-    HardwarePushbot_TC robot;
+    Hardware robot;
     private ElapsedTime runtime = new ElapsedTime();
     private double FrontLeftPower;
     private double FrontRightPower;
@@ -84,7 +84,7 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
     private double BackRightPower;
     @Override
     public void runOpMode() {
-        robot = new HardwarePushbot_TC(hardwareMap);
+        robot = new Hardware(hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)

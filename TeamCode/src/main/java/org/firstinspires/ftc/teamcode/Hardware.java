@@ -34,7 +34,6 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -54,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwarePushbot_TC
+public class Hardware
 {
     /* Public OpMode members. */
     static public HardwareMap hardwareMap = null;
@@ -74,7 +73,7 @@ public class HardwarePushbot_TC
     private Telemetry telemetry;
 
     /* Initialize standard Hardware interfaces */
-    public HardwarePushbot_TC(HardwareMap hwMap){
+    public Hardware(HardwareMap hwMap){
         init(hwMap);
     }
 
