@@ -1,6 +1,10 @@
-## TeamCode Module
-
+# Template for new teams
 Welcome!
+
+This repository stores all the code you need to get started programming your FTC robot!
+
+
+## TeamCode Module
 
 This module, TeamCode, is the place where you will write/paste the code for your team's
 robot controller App. This module is currently empty (a clean slate) but the

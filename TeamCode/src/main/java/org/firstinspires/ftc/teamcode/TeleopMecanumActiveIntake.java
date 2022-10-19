@@ -51,17 +51,11 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.HardwarePushbot_TC.*;
 
-import android.transition.Slide;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
 
 
 /**
@@ -77,115 +71,46 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleopMecanumActiveIntake", group="Concept")
+@TeleOp(name="NewTeleopMecanumActiveIntake", group="Concept")
 //@Disabled
 public class TeleopMecanumActiveIntake extends LinearOpMode {
 
     // Declare OpMode members.
+    HardwarePushbot_TC robot;
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor FrontLeftDrive = null;
-    private DcMotor FrontRightDrive = null;
-    private DcMotor BackLeftDrive = null;
-    private DcMotor BackRightDrive = null;
-    private DcMotor SlideMotorDrive = null;
-    private Servo ClawServoDrive = null;
-    public double openPosition = 0.66;
-    public double closedPosition = 0.3;
-
-
+    private double FrontLeftPower;
+    private double FrontRightPower;
+    private double BackLeftPower;
+    private double BackRightPower;
     @Override
     public void runOpMode() {
+        robot = new HardwarePushbot_TC(hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        FrontLeftDrive  = hardwareMap.get(DcMotor.class, "FrontLeft");
-        FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
-        BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
-        BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
-        SlideMotorDrive = hardwareMap.get(DcMotor.class, "SlideMotor");
-        ClawServoDrive= hardwareMap.get(Servo.class, "ClawServo");
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        SlideMotorDrive.setDirection(DcMotor.Direction.REVERSE);
-
-
-
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             // Setup a variable for each drive wheel to save power level for telemetry
-            double FrontLeftPower;
-            double FrontRightPower;
-            double BackLeftPower;
-            double BackRightPower;
-            double SlideMotorPower = 0;
-
-
-            //double drive = 0.9*(gamepad1.left_stick_y);
-           // double turn  =  0.7 * (-gamepad1.right_stick_x);
-           // double strafe = 0.9*(-gamepad1.left_stick_x);
             double drive = 0.9 *  (-gamepad1.left_stick_y);
             double turn  = 0.7* (gamepad1.left_stick_x);
             double strafe = 0.9* (gamepad1.right_stick_x);
             double slidedrive = 0.9 *  (-gamepad2.left_stick_y);
-
-
             double denominator = Math.max(Math.abs(drive)+Math.abs(turn)+Math.abs(strafe),1);
 
-            FrontLeftPower    = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
-            BackLeftPower    = Range.clip(drive - turn + strafe, -1, 1)/denominator ;
-            FrontRightPower   = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
-            BackRightPower   = Range.clip(drive + turn - strafe, -1, 1) /denominator;
-            SlideMotorPower = Range.clip(slidedrive , -1, 1) /denominator;
 
-            if(gamepad1.x){
-             //   SlideMotorPower = 0.2;
-            }
-            if(gamepad1.y){
-              //  SlideMotorPower = 0.0;
-            }
-            //Assigns Gamepad Button B to decrease slide power
-            if(gamepad1.b){
-                SlideMotorPower = -0.2;
-
-            }
-            if(gamepad1. dpad_right){
-               ClawServoDrive.setPosition(closedPosition);
-            }
-            if(gamepad1.dpad_left){
-               ClawServoDrive.setPosition(openPosition);
-            }
-
-
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
+            FrontLeftPower = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
+            BackLeftPower = Range.clip(drive - turn + strafe, -1, 1)/denominator ;
+            FrontRightPower = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
+            BackRightPower = Range.clip(drive + turn - strafe, -1, 1) /denominator;
 
             // Send calculated power to wheels
-            FrontLeftDrive.setPower(FrontLeftPower);
-            FrontRightDrive.setPower(FrontRightPower);
-            BackLeftDrive.setPower(BackLeftPower);
-            BackRightDrive.setPower(BackRightPower);
-            SlideMotorDrive.setPower(SlideMotorPower);
-
-
-
-
-
+            frontLeft.setPower(FrontLeftPower);
+            frontRight.setPower(FrontRightPower);
+            backLeft.setPower(BackLeftPower);
+            backRight.setPower(BackRightPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -193,38 +118,5 @@ public class TeleopMecanumActiveIntake extends LinearOpMode {
             telemetry.update();
         }
     }
-    public void encoderDriveArmInLine(DcMotor ArmMotor, double speed, double armmovement, double timeoutS) {
-        int newArmTarget;
 
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newArmTarget = ArmMotor.getCurrentPosition() + (int) (armmovement * COUNTS_PER_INCH);
-            ArmMotor.setPower(Math.abs(speed));
-            ArmMotor.setTargetPosition(newArmTarget);
-
-            // Turn On RUN_TO_POSITION
-            ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) && ArmMotor.isBusy()) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d ", newArmTarget);
-                telemetry.addData("Path2", "Running at %7d ", ArmMotor.getCurrentPosition());
-
-                telemetry.update();
-            }
-
-            sleep(250);   // optional pause after each move
-
-        }
-    }
 }

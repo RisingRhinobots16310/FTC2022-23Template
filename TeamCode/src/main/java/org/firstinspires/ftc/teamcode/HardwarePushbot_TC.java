@@ -29,15 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.transition.Slide;
+import static java.lang.Thread.sleep;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * This is NOT an opmode.
@@ -58,13 +57,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwarePushbot_TC
 {
     /* Public OpMode members. */
-    public DcMotor  frontLeft   = null;
-    public DcMotor  frontRight  = null;
-    public DcMotor  backLeft  = null;
-    public DcMotor  backRight  = null;
-    public CRServo ClawServo = null;
-
-    public DcMotor SlideMotor = null;
+    static public HardwareMap hardwareMap = null;
+    static public DcMotor frontLeft = null;
+    static public DcMotor  frontRight  = null;
+    static public DcMotor  backLeft  = null;
+    static public DcMotor  backRight  = null;
 
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6;  // 1440;    // eg: TETRIX Motor Encoder
@@ -72,51 +69,35 @@ public class HardwarePushbot_TC
     static final double     WHEEL_DIAMETER_INCHES   = 4 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.9;
-    static final double     TURN_SPEED              = 0.3;
-    static final double CLAW_OPEN_POS = 0.31;
-    static final double CLAW_CLOSE_POS = 0.10;
-    static final double CLAWREACH_MAX_POS = 0.1;
-    static final double CLAWREACH_PICK_POS = 0.24;
-    static final double CLAWREACH_PULLIN_P0S = 0.75;
-    static final double ARMMOVEMENT_LOW = 5.75;
-    static final double ARMMOVEMENT_MID = 9.3;
-    static final double ARMMOVEMENT_HIGH = 15.3;
-    static final double distance = 9;
-
-
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
-
-    /* Constructor */
-    public HardwarePushbot_TC(){
-
-    }
+    private ElapsedTime runtime = new ElapsedTime();
+    private Telemetry telemetry;
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
+    public HardwarePushbot_TC(HardwareMap hwMap){
+        init(hwMap);
+    }
+
+
+    private void init(HardwareMap hwMap) {
+        hardwareMap = hwMap;
 
         // Define and Initialize Motors
-        frontLeft  = hwMap.get(DcMotorEx.class, "FrontLeft");
-        frontRight = hwMap.get(DcMotorEx.class, "FrontRight");
-        backLeft =  hwMap.get(DcMotorEx.class, "BackLeft");
-        backRight = hwMap.get(DcMotorEx.class, "BackRight");
+        frontLeft  = hardwareMap.get(DcMotorEx.class, "FrontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
+        backLeft =  hardwareMap.get(DcMotorEx.class, "BackLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "BackRight");
 
 
+        // Define and Initialize Servos
+        // Example Servo initialize code: ClawServo = hardwareMap.get(Servo.class, "ClawServo");
 
-        //    CapPickServo = hwMap.get(Servo.class, "CapPick");
-        // CapGrabClawServo= hwMap.get(Servo.class, "CapGrabClaw");
-        ClawServo = hwMap.get(CRServo.class, "ClawServo");
+
 
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontRight.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
-        SlideMotor.setDirection(DcMotorEx.Direction.REVERSE);
-
 
 
 
@@ -125,8 +106,6 @@ public class HardwarePushbot_TC
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        SlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
 
 
         // Set all motors to zero power
@@ -134,22 +113,16 @@ public class HardwarePushbot_TC
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-        SlideMotor.setPower(0);
 
 
-        // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        SlideMotor.setMode((DcMotor.RunMode.RUN_USING_ENCODER));
-
-
-
-
-
 
     }
+
+
 }
 
