@@ -71,7 +71,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="NewTeleopMecanumActiveIntake", group="Concept")
+@TeleOp(name="TeleopMecanum", group="Concept")
 //@Disabled
 public class TeleopMecanum extends LinearOpMode {
 
@@ -97,16 +97,15 @@ public class TeleopMecanum extends LinearOpMode {
             double drive = 0.9 *  (-gamepad1.left_stick_y);
             double turn  = 0.7* (gamepad1.left_stick_x);
             double strafe = 0.9* (gamepad1.right_stick_x);
-            double slidedrive = 0.9 *  (-gamepad2.left_stick_y);
             double denominator = Math.max(Math.abs(drive)+Math.abs(turn)+Math.abs(strafe),1);
 
-
+            //Calculates power that should be given to each motor
             FrontLeftPower = Range.clip(drive + turn + strafe, -1, 1)/denominator ;
             BackLeftPower = Range.clip(drive - turn + strafe, -1, 1)/denominator ;
             FrontRightPower = Range.clip(drive - turn - strafe, -1, 1)/denominator ;
             BackRightPower = Range.clip(drive + turn - strafe, -1, 1) /denominator;
 
-            // Send calculated power to wheels
+            // Sends calculated power to wheels
             frontLeft.setPower(FrontLeftPower);
             frontRight.setPower(FrontRightPower);
             backLeft.setPower(BackLeftPower);

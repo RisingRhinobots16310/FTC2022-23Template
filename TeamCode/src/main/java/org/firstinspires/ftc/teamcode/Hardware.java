@@ -89,18 +89,19 @@ public class Hardware
 
 
         // Define and Initialize Servos
-        // Example Servo initialize code: ClawServo = hardwareMap.get(Servo.class, "ClawServo");
+        // Example Servo initialization code: ClawServo = hardwareMap.get(Servo.class, "ClawServo");
 
 
 
-        frontLeft.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        // The only way to figure out if this is correct is by making an educated guess and testing on the robot. This can be easily changed.
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
 
 
-
+        // As the name suggests, these lines are for when the motors are given no power. This command is only useful if you want sudden braking. Otherwise, delete lines 105-108.
         frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -114,7 +115,7 @@ public class Hardware
         backRight.setPower(0);
 
 
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
+        // Should use RUN_USING_ENCODERS if encoder cables are installed.
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
