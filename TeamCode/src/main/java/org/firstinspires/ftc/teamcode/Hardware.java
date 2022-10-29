@@ -82,10 +82,10 @@ public class Hardware
         hardwareMap = hwMap;
 
         // Define and Initialize Motors
-        frontLeft  = hardwareMap.get(DcMotorEx.class, "FrontLeft");
-        frontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
-        backLeft =  hardwareMap.get(DcMotorEx.class, "BackLeft");
-        backRight = hardwareMap.get(DcMotorEx.class, "BackRight");
+        frontLeft  = hardwareMap.get(DcMotor.class, "FrontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "FrontRight");
+        backLeft =  hardwareMap.get(DcMotor.class, "BackLeft");
+        backRight = hardwareMap.get(DcMotor.class, "BackRight");
 
 
         // Define and Initialize Servos
@@ -94,18 +94,18 @@ public class Hardware
 
 
         // The only way to figure out if this is correct is by making an educated guess and testing on the robot. This can be easily changed.
-        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
 
 
 
         // As the name suggests, these lines are for when the motors are given no power. This command is only useful if you want sudden braking. Otherwise, delete lines 105-108.
-        frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Set all motors to zero power
@@ -116,10 +116,10 @@ public class Hardware
 
 
         // Should use RUN_USING_ENCODERS if encoder cables are installed.
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
